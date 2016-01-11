@@ -1,5 +1,7 @@
 package ch03
 
+import scala.annotation.tailrec
+
 sealed trait List[+A]
 
 case object Nil extends List[Nothing]
@@ -8,6 +10,11 @@ case class Cons[+A](x: A, tail: List[A]) extends List[A]
 
 object List {
 
+  def concatenate[A](lists: List[List[A]]): List[A] = lists match {
+   case Nil => Nil
+   case Cons(h, t) => appendWithFoldRight(h, concatenate(t))
+  }
+
 
   def init[A](l: List[A]): List[A] = l match {
     case Nil => sys.error("can't do it")
@@ -15,6 +22,7 @@ object List {
     case Cons(h, t) => Cons(h, init(t))
   }
 
+  @tailrec
   def drop[A](ls: List[A], n: Int): List[A] =
     if (n <= 0) ls
     else
@@ -67,6 +75,7 @@ object List {
     }
   }
 
+  @tailrec
   def foldLeft[A, B](ls: List[A], z: B)(f: (B,A)=> B) : B = {
     ls match {
       case Nil => z
