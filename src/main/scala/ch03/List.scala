@@ -9,10 +9,24 @@ case object Nil extends List[Nothing]
 case class Cons[+A](x: A, tail: List[A]) extends List[A]
 
 object List {
+  def filter[A](as: List[A])(f: A => Boolean): List[A] = as match {
+    case Nil => Nil
+    case Cons(h, t) if f(h) => filter(t)(f)
+    case Cons(h, t) if !f(h) => Cons(h, filter(t)(f))
+
+  }
+
+
+  def doubleToString(doubles: List[Double]): List[String] = doubles match {
+    case Nil => Nil
+    case Cons(h, t) => Cons(h.toString, doubleToString(t))
+
+  }
+
 
   def concatenate[A](lists: List[List[A]]): List[A] = lists match {
-   case Nil => Nil
-   case Cons(h, t) => appendWithFoldRight(h, concatenate(t))
+    case Nil => Nil
+    case Cons(h, t) => appendWithFoldRight(h, concatenate(t))
   }
 
 
@@ -76,24 +90,34 @@ object List {
   }
 
   @tailrec
-  def foldLeft[A, B](ls: List[A], z: B)(f: (B,A)=> B) : B = {
+  def foldLeft[A, B](ls: List[A], z: B)(f: (B, A) => B): B = {
     ls match {
       case Nil => z
-      case Cons(h,t) => foldLeft(t, f(z,h))(f)
+      case Cons(h, t) => foldLeft(t, f(z, h))(f)
     }
   }
 
-  def reverse(ls: List[Int]): List[Int] = foldLeft(ls,Nil:List[Int])((x,y) => Cons(y,x))
+  def transform(ints: List[Int]): List[Int] = ints match {
+    case Nil => Nil
+    case Cons(h, t) => Cons(h + 1, transform(t))
+  }
 
-  def appendWithFoldRight[A](l: List[A], r:List[A]): List[A] = foldRight(l,r)(Cons(_,_))
+  def map[A, B](ls: List[A])(f: A => B): List[B] = ls match {
+    case Nil => Nil
+    case Cons(h, t) => Cons(f(h), map(t)(f))
+  }
+
+  def reverse(ls: List[Int]): List[Int] = foldLeft(ls, Nil: List[Int])((x, y) => Cons(y, x))
+
+  def appendWithFoldRight[A](l: List[A], r: List[A]): List[A] = foldRight(l, r)(Cons(_, _))
 
   //TODO
-  def folRightWithFoldLeft[A,B](ls: List[A], z: B)(f:(A,B)=>B) : B = ???
+  def folRightWithFoldLeft[A, B](ls: List[A], z: B)(f: (A, B) => B): B = ???
 
 
-  def sumWithFoldLeft(ints: List[Int]): Int = foldLeft(ints,0)((x,y)=> x + y)
+  def sumWithFoldLeft(ints: List[Int]): Int = foldLeft(ints, 0)((x, y) => x + y)
 
-  def productWithFoldLeft(ints: List[Int]): Int = foldLeft(ints,1)((x,y)=> x * y)
+  def productWithFoldLeft(ints: List[Int]): Int = foldLeft(ints, 1)((x, y) => x * y)
 
 
   def length[A](ls: List[A]): Int = foldRight(ls, 0)((x, y) => y + 1)
