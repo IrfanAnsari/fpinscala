@@ -1,3 +1,7 @@
+# Code Climate
+
+[![Build Status](https://travis-ci.org/IrfanAnsari/fpinscala.png?branch=master)](https://travis-ci.org/IrfanAnsari/fpinscala)
+
 This is a an [activator](https://typesafe.com/activator) template for removing
 the boilerplate in setting up a new scala project:
 
