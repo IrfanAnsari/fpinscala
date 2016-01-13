@@ -9,6 +9,15 @@ case object Nil extends List[Nothing]
 case class Cons[+A](x: A, tail: List[A]) extends List[A]
 
 object List {
+
+  def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] = flatten(map(as)(f))
+
+  def flatten[A](as: List[List[A]]): List[A] = as match {
+    case Nil => Nil
+    case Cons(h, Nil) => h
+    case Cons(h,t) => appendWithFoldRight(h,flatten(t))
+  }
+
   def filter[A](as: List[A])(f: A => Boolean): List[A] = as match {
     case Nil => Nil
     case Cons(h, t) if f(h) => filter(t)(f)
