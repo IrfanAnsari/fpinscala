@@ -10,23 +10,30 @@ case class Cons[+A](x: A, tail: List[A]) extends List[A]
 
 object List {
 
+  def zipWith[A](as: List[A], bs: List[A])(f: (A, A) => A): List[A] = (as, bs) match {
+    case (Nil, Nil) => Nil
+    case (Cons(h, t), Nil) => Cons(h, t)
+    case (Nil, Cons(h, t)) => Cons(h, t)
+    case (Cons(x, ys), Cons(a, bs)) => Cons(f(x, a), zipWith(ys, bs)(f))
+  }
+
   def addCorrespondingElements(as: List[Int], bs: List[Int]): List[Int] = (as, bs) match {
     case (Nil, Nil) => Nil
-    case (Cons(h, t), Nil) => Cons(h,t)
-    case (Nil, Cons(h,t)) => Cons(h,t)
-    case (Cons(x,ys), Cons(a,bs)) => Cons(x+a, addCorrespondingElements(ys, bs))
+    case (Cons(h, t), Nil) => Cons(h, t)
+    case (Nil, Cons(h, t)) => Cons(h, t)
+    case (Cons(x, ys), Cons(a, bs)) => Cons(x + a, addCorrespondingElements(ys, bs))
   }
 
 
   def filterWithFlatMap[A](as: List[A])(f: A => Boolean): List[A] = ???
 
 
-  def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] = flatten(map(as)(f))
+  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] = flatten(map(as)(f))
 
   def flatten[A](as: List[List[A]]): List[A] = as match {
     case Nil => Nil
     case Cons(h, Nil) => h
-    case Cons(h,t) => appendWithFoldRight(h,flatten(t))
+    case Cons(h, t) => appendWithFoldRight(h, flatten(t))
   }
 
   def filter[A](as: List[A])(f: A => Boolean): List[A] = as match {
