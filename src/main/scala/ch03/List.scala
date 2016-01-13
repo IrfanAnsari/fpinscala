@@ -10,6 +10,17 @@ case class Cons[+A](x: A, tail: List[A]) extends List[A]
 
 object List {
 
+  def addCorrespondingElements(as: List[Int], bs: List[Int]): List[Int] = (as, bs) match {
+    case (Nil, Nil) => Nil
+    case (Cons(h, t), Nil) => Cons(h,t)
+    case (Nil, Cons(h,t)) => Cons(h,t)
+    case (Cons(x,ys), Cons(a,bs)) => Cons(x+a, addCorrespondingElements(ys, bs))
+  }
+
+
+  def filterWithFlatMap[A](as: List[A])(f: A => Boolean): List[A] = ???
+
+
   def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] = flatten(map(as)(f))
 
   def flatten[A](as: List[List[A]]): List[A] = as match {
